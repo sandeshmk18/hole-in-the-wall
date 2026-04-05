@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Hole in the Wall Café — Bangalore's Favorite Breakfast Spot</title>
+  <meta name="description" content="The Hole in the Wall Café serves Bangalore's most beloved breakfasts. Fresh ingredients, warm ambiance, and soul-warming food in the heart of the city." />
+  <meta name="keywords" content="breakfast café Bangalore, best breakfast Bangalore, brunch Bangalore, The Hole in the Wall Café" />
+  <meta property="og:title" content="The Hole in the Wall Café" />
+  <meta property="og:description" content="Bangalore's Favorite Breakfast Spot. Book your table today." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400;1,600&family=Lato:wght@300;400;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #faf6f0;
+      --cream-dark: #f2ebe0;
+      --warm-white: #fffdf9;
+      --brown-deep: #3b2314;
+      --brown-mid: #6b3f26;
+      --brown-light: #a0613a;
+      --caramel: #c8885a;
+      --caramel-light: #e2b48a;
+      --gold: #d4a84b;
+      --sage: #8a9e7f;
+      --sage-light: #b8c9b0;
+      --peach: #f4c9a8;
+      --text-dark: #2c1a0e;
+      --text-mid: #5c3d28;
+      --text-light: #8a6850;
+      --shadow-warm: rgba(107,63,38,0.15);
+      --shadow-deep: rgba(59,35,20,0.25);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--cream-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--caramel); border-radius: 3px; }
+
+    /* ── NAVBAR ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 0 2rem;
+      height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s ease, box-shadow 0.4s ease, height 0.3s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(250,246,240,0.97);
+      box-shadow: 0 2px 20px var(--shadow-warm);
+      height: 62px;
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      display: flex; flex-direction: column; line-height: 1;
+      text-decoration: none;
+    }
+    .nav-logo span:first-child {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5rem;
+      color: var(--brown-deep);
+    }
+    .nav-logo span:last-child {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--caramel);
+      margin-top: 2px;
+    }
+    .nav-links {
+      display: flex; gap: 2rem; list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--brown-deep);
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0; right: 100%;
+      height: 1.5px; background: var(--caramel);
+      transition: right 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--caramel); }
+    .nav-links a:hover::after { right: 0; }
+    .nav-cta {
+      background: var(--brown-deep);
+      color: var(--cream) !important;
+      padding: 0.5rem 1.25rem;
+      border-radius: 2px;
+      transition: background 0.3s !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: var(--caramel) !important; color: white !important; }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px;
+      background: none; border: none;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--brown-deep);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed; top: 62px; left: 0; right: 0; z-index: 999;
+      background: rgba(250,246,240,0.98);
+      backdrop-filter: blur(16px);
+      padding: 1.5rem 2rem 2rem;
+      box-shadow: 0 8px 32px var(--shadow-deep);
+      transform: translateY(-10px); opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .mobile-menu.open { display: block; transform: translateY(0); opacity: 1; }
+    .mobile-menu ul { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+    .mobile-menu a {
+      text-decoration: none;
+      font-size: 0.9rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--brown-deep);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1600&q=80');
+      background-size: cover; background-position: center;
+      transform: scale(1.05);
+      transition: transform 8s ease;
+    }
+    .hero-bg.loaded { transform: scale(1); }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(59,35,20,0.72) 0%,
+        rgba(107,63,38,0.55) 40%,
+        rgba(200,136,90,0.25) 100%
+      );
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center;
+      max-width: 820px;
+      padding: 2rem;
+    }
+    .hero-badge {
+      display: inline-block;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--caramel-light);
+      border: 1px solid rgba(226,180,138,0.5);
+      padding: 0.4rem 1.2rem;
+      border-radius: 2px;
+      margin-bottom: 1.5rem;
+      opacity: 0; transform: translateY(20px);
+      animation: heroFadeUp 0.8s 0.3s forwards;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      font-weight: 800;
+      color: var(--warm-white);
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+      opacity: 0; transform: translateY(25px);
+      animation: heroFadeUp 0.9s 0.5s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--caramel-light);
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: rgba(255,253,249,0.85);
+      line-height: 1.75;
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      opacity: 0; transform: translateY(20px);
+      animation: heroFadeUp 0.9s 0.7s forwards;
+    }
+    .hero-btns {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      opacity: 0; transform: translateY(20px);
+      animation: heroFadeUp 0.9s 0.9s forwards;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--caramel);
+      color: white;
+      padding: 0.85rem 2rem;
+      font-family: 'Lato', sans-serif;
+      font-weight: 700; font-size: 0.82rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none;
+      border: none; cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 16px rgba(200,136,90,0.4);
+    }
+    .btn-primary:hover {
+      background: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(200,136,90,0.5);
+    }
+    .btn-outline {
+      display: inline-block;
+      background: transparent;
+      color: var(--warm-white);
+      padding: 0.85rem 2rem;
+      font-family: 'Lato', sans-serif;
+      font-weight: 700; font-size: 0.82rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none;
+      border: 2px solid rgba(255,253,249,0.7);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.3s, border-color 0.3s, transform 0.2s;
+    }
+    .btn-outline:hover {
+      background: rgba(255,253,249,0.15);
+      border-color: var(--caramel-light);
+      color: var(--caramel-light);
+      transform: translateY(-2px);
+    }
+    .hero-scroll {
+      position: absolute; bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      color: rgba(255,253,249,0.6);
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      animation: bounce 2s infinite 2s;
+    }
+    .hero-scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, rgba(255,253,249,0.6), transparent);
+    }
+    @keyframes heroFadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── SECTIONS COMMON ── */
+    section { padding: 6rem 2rem; }
+    .section-label {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--caramel);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      color: var(--brown-deep);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .section-title em { font-style: italic; color: var(--caramel); }
+    .section-divider {
+      width: 48px; height: 2px;
+      background: linear-gradient(to right, var(--caramel), var(--gold));
+      margin: 1.25rem 0;
+    }
+    .section-divider.centered { margin: 1.25rem auto; }
+
+    /* fade-in scroll animations */
+    .fade-in {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .fade-in-left {
+      opacity: 0; transform: translateX(-40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in-left.visible { opacity: 1; transform: translateX(0); }
+    .fade-in-right {
+      opacity: 0; transform: translateX(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* ── ABOUT ── */
+    #about { background: var(--warm-white); }
+    .about-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-main {
+      width: 100%; aspect-ratio: 4/5;
+      object-fit: cover; border-radius: 4px;
+      box-shadow: 12px 12px 0 var(--caramel-light);
+    }
+    .about-img-accent {
+      position: absolute;
+      width: 48%; aspect-ratio: 1;
+      object-fit: cover; border-radius: 4px;
+      bottom: -2rem; right: -2rem;
+      border: 5px solid var(--warm-white);
+      box-shadow: 0 8px 24px var(--shadow-deep);
+    }
+    .about-badge {
+      position: absolute; top: -1.5rem; left: -1.5rem;
+      width: 80px; height: 80px;
+      background: var(--brown-deep);
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: var(--cream);
+    }
+    .about-badge strong {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; line-height: 1;
+    }
+    .about-badge span {
+      font-size: 0.5rem; letter-spacing: 0.12em;
+      text-transform: uppercase; margin-top: 2px;
+    }
+    .about-text p {
+      font-size: 1rem; line-height: 1.85;
+      color: var(--text-mid);
+      margin-bottom: 1.25rem;
+    }
+    .about-stats {
+      display: flex; gap: 2rem; margin-top: 2rem;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 800;
+      color: var(--caramel);
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.72rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-light);
+    }
+
+    /* ── MENU ── */
+    #menu { background: var(--cream); }
+    .menu-inner { max-width: 1100px; margin: 0 auto; }
+    .menu-header { text-align: center; margin-bottom: 3rem; }
+    .menu-tabs {
+      display: flex; justify-content: center; gap: 0.5rem;
+      flex-wrap: wrap; margin-bottom: 3rem;
+    }
+    .menu-tab {
+      padding: 0.5rem 1.5rem;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: none; border: 1.5px solid var(--caramel-light);
+      color: var(--text-mid); border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.25s, color 0.25s, border-color 0.25s;
+    }
+    .menu-tab.active, .menu-tab:hover {
+      background: var(--brown-deep);
+      border-color: var(--brown-deep);
+      color: var(--cream);
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .menu-card {
+      background: var(--warm-white);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px var(--shadow-warm);
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: none;
+    }
+    .menu-card.active { display: block; }
+    .menu-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 32px var(--shadow-deep);
+    }
+    .menu-card-img {
+      width: 100%; height: 180px;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .menu-card:hover .menu-card-img { transform: scale(1.06); }
+    .menu-card-body { padding: 1.25rem; }
+    .menu-card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem; font-weight: 600;
+      color: var(--brown-deep);
+      margin-bottom: 0.4rem;
+    }
+    .menu-card-desc {
+      font-size: 0.85rem; color: var(--text-light);
+      line-height: 1.65; margin-bottom: 1rem;
+    }
+    .menu-card-footer {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .menu-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--caramel);
+    }
+    .menu-tag {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 2px;
+    }
+    .tag-veg { background: #e8f5e9; color: #388e3c; }
+    .tag-chef { background: var(--cream-dark); color: var(--caramel); }
+
+    /* ── GALLERY ── */
+    #gallery { background: var(--cream-dark); }
+    .gallery-inner { max-width: 1100px; margin: 0 auto; }
+    .gallery-header { text-align: center; margin-bottom: 3rem; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto;
+      gap: 0.75rem;
+    }
+    .gallery-item {
+      overflow: hidden; border-radius: 3px;
+      position: relative; cursor: pointer;
+    }
+    .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .gallery-item:nth-child(5) { grid-column: span 2; }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform 0.5s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.08); }
+    .gallery-overlay {
+      position: absolute; inset: 0;
+      background: rgba(59,35,20,0);
+      transition: background 0.3s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gallery-item:hover .gallery-overlay { background: rgba(59,35,20,0.25); }
+    .gallery-icon {
+      color: white; font-size: 1.5rem;
+      opacity: 0; transform: scale(0.8);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .gallery-item:hover .gallery-icon { opacity: 1; transform: scale(1); }
+
+    /* ── RESERVATION ── */
+    #reservation { background: var(--brown-deep); }
+    .reservation-inner {
+      max-width: 1000px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 5rem; align-items: start;
+    }
+    .reservation-info .section-label { color: var(--caramel-light); }
+    .reservation-info .section-title { color: var(--warm-white); }
+    .reservation-info .section-divider { background: linear-gradient(to right, var(--caramel), var(--gold)); }
+    .reservation-info p {
+      color: rgba(255,253,249,0.7);
+      font-size: 0.95rem; line-height: 1.85;
+      margin-top: 1rem;
+    }
+    .res-contact {
+      margin-top: 2rem;
+      display: flex; flex-direction: column; gap: 0.85rem;
+    }
+    .res-contact-item {
+      display: flex; gap: 0.75rem; align-items: flex-start;
+    }
+    .res-icon {
+      width: 36px; height: 36px;
+      background: rgba(255,253,249,0.08);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.85rem;
+    }
+    .res-contact-item span {
+      color: rgba(255,253,249,0.75);
+      font-size: 0.88rem; line-height: 1.6;
+    }
+    .res-form {
+      background: rgba(255,253,249,0.05);
+      border: 1px solid rgba(255,253,249,0.1);
+      border-radius: 6px;
+      padding: 2.5rem;
+    }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,253,249,0.6);
+      margin-bottom: 0.5rem;
+    }
+    .form-group input, .form-group select {
+      width: 100%; padding: 0.75rem 1rem;
+      background: rgba(255,253,249,0.07);
+      border: 1.5px solid rgba(255,253,249,0.12);
+      border-radius: 3px;
+      color: var(--warm-white);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.92rem;
+      transition: border-color 0.3s, background 0.3s;
+      outline: none;
+    }
+    .form-group input::placeholder { color: rgba(255,253,249,0.3); }
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--caramel);
+      background: rgba(255,253,249,0.1);
+    }
+    .form-group select option { background: var(--brown-mid); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn-submit {
+      width: 100%; padding: 0.9rem;
+      background: var(--caramel);
+      color: white;
+      font-family: 'Lato', sans-serif;
+      font-weight: 700; font-size: 0.82rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      border: none; border-radius: 3px; cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 0.5rem;
+    }
+    .btn-submit:hover { background: var(--gold); transform: translateY(-1px); }
+    .form-success {
+      display: none;
+      text-align: center; padding: 2rem;
+      color: var(--caramel-light);
+    }
+    .form-success .checkmark { font-size: 3rem; margin-bottom: 1rem; }
+    .form-success h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; color: var(--warm-white);
+      margin-bottom: 0.5rem;
+    }
+    .form-success p { color: rgba(255,253,249,0.6); font-size: 0.9rem; }
+
+    /* ── REVIEWS ── */
+    #reviews { background: var(--warm-white); }
+    .reviews-inner { max-width: 1100px; margin: 0 auto; }
+    .reviews-header { text-align: center; margin-bottom: 3.5rem; }
+    .reviews-slider {
+      position: relative; overflow: hidden;
+    }
+    .reviews-track {
+      display: flex; gap: 1.5rem;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .review-card {
+      min-width: calc(33.333% - 1rem);
+      background: var(--cream);
+      border-radius: 4px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px var(--shadow-warm);
+      flex-shrink: 0;
+    }
+    .review-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 2px; }
+    .review-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem; line-height: 1.75;
+      color: var(--text-mid);
+      margin-bottom: 1.5rem;
+    }
+    .reviewer { display: flex; gap: 0.75rem; align-items: center; }
+    .reviewer-img {
+      width: 44px; height: 44px;
+      border-radius: 50%; object-fit: cover;
+      border: 2px solid var(--caramel-light);
+    }
+    .reviewer-info strong {
+      display: block;
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--brown-deep);
+    }
+    .reviewer-info span {
+      font-size: 0.75rem; color: var(--text-light);
+    }
+    .slider-controls {
+      display: flex; justify-content: center; gap: 0.75rem;
+      margin-top: 2.5rem;
+    }
+    .slider-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid var(--caramel-light);
+      background: none; cursor: pointer;
+      color: var(--caramel);
+      font-size: 1rem;
+      transition: background 0.3s, color 0.3s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .slider-btn:hover { background: var(--brown-deep); color: white; border-color: var(--brown-deep); }
+    .slider-dots { display: flex; gap: 0.5rem; align-items: center; }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%; background: var(--caramel-light);
+      cursor: pointer; transition: background 0.3s, transform 0.3s;
+    }
+    .dot.active { background: var(--caramel); transform: scale(1.4); }
+
+    /* ── LOCATION ── */
+    #location { background: var(--cream); }
+    .location-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.6fr;
+      gap: 4rem; align-items: start;
+    }
+    .location-info .section-divider { margin: 1rem 0; }
+    .location-detail {
+      margin-top: 1.5rem;
+      display: flex; flex-direction: column; gap: 1.25rem;
+    }
+    .loc-item {
+      display: flex; gap: 0.85rem; align-items: flex-start;
+    }
+    .loc-icon {
+      width: 40px; height: 40px;
+      background: var(--cream-dark);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      color: var(--caramel); font-size: 1rem;
+    }
+    .loc-item strong {
+      display: block;
+      font-size: 0.75rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-light);
+      margin-bottom: 0.2rem;
+    }
+    .loc-item p { font-size: 0.92rem; color: var(--text-mid); line-height: 1.65; }
+    .map-wrap {
+      border-radius: 6px; overflow: hidden;
+      box-shadow: 0 8px 32px var(--shadow-deep);
+      height: 420px;
+    }
+    .map-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--brown-deep);
+      padding: 4rem 2rem 2rem;
+      color: rgba(255,253,249,0.7);
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255,253,249,0.1);
+    }
+    .footer-brand .nav-logo span:first-child { color: var(--cream); font-size: 1.8rem; }
+    .footer-brand .nav-logo span:last-child { color: var(--caramel-light); }
+    .footer-brand p {
+      margin-top: 1rem; font-size: 0.88rem; line-height: 1.75;
+      color: rgba(255,253,249,0.55);
+    }
+    .footer-social {
+      display: flex; gap: 0.75rem; margin-top: 1.5rem;
+    }
+    .social-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,253,249,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,253,249,0.7);
+      text-decoration: none; font-size: 0.85rem;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+    }
+    .social-btn:hover {
+      background: var(--caramel);
+      border-color: var(--caramel);
+      color: white;
+    }
+    .footer-col h4 {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,253,249,0.9);
+      margin-bottom: 1.25rem;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-links a {
+      text-decoration: none;
+      font-size: 0.88rem;
+      color: rgba(255,253,249,0.55);
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--caramel-light); }
+    .hours-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .hours-item {
+      display: flex; justify-content: space-between;
+      font-size: 0.85rem; color: rgba(255,253,249,0.55);
+    }
+    .hours-item span:last-child { color: rgba(255,253,249,0.8); }
+    .footer-bottom {
+      max-width: 1100px; margin: 2rem auto 0;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+      font-size: 0.78rem; color: rgba(255,253,249,0.35);
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.92);
+      align-items: center; justify-content: center;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 3px; }
+    .lightbox-close {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      color: white; font-size: 2rem; cursor: pointer;
+      background: none; border: none; line-height: 1;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+      .gallery-item:nth-child(1) { grid-column: span 2; }
+      .gallery-item:nth-child(5) { grid-column: span 1; }
+      .review-card { min-width: calc(50% - 0.75rem); }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      section { padding: 4rem 1.5rem; }
+      .about-inner,
+      .reservation-inner,
+      .location-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-img-accent { display: none; }
+      .about-badge { top: 1rem; left: 1rem; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-item:nth-child(1) { grid-column: span 2; aspect-ratio: 16/9; }
+      .gallery-item:nth-child(5) { grid-column: span 2; }
+      .review-card { min-width: 85vw; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+
+    @media (max-width: 480px) {
+      .footer-inner { grid-template-columns: 1fr; }
+      .about-stats { gap: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+  <a href="#hero" class="nav-logo" aria-label="The Hole in the Wall Café Home">
+    <span>The Hole in the Wall</span>
+    <span>Café &amp; Breakfast Bar · Bangalore</span>
+  </a>
+  <ul class="nav-links" role="list">
+    <li><a href="#about">Our Story</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#location">Visit Us</a></li>
+    <li><a href="#reservation" class="nav-cta">Book a Table</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+  <ul>
+    <li><a href="#about" class="mobile-link">Our Story</a></li>
+    <li><a href="#menu" class="mobile-link">Menu</a></li>
+    <li><a href="#gallery" class="mobile-link">Gallery</a></li>
+    <li><a href="#reviews" class="mobile-link">Reviews</a></li>
+    <li><a href="#location" class="mobile-link">Visit Us</a></li>
+    <li><a href="#reservation" class="mobile-link">Book a Table</a></li>
+  </ul>
+</div>
+
+<!-- HERO -->
+<section id="hero" aria-label="Hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Est. 2011 · Indiranagar, Bangalore</div>
+    <h1 class="hero-title">Bangalore's <em>Favourite</em><br>Breakfast Spot</h1>
+    <p class="hero-sub">Where mornings taste like they were made just for you. Slow-cooked plates, single-origin pour-overs, and a corner table with your name on it.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-primary">Explore Our Menu</a>
+      <a href="#reservation" class="btn-outline">Reserve a Table</a>
+    </div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">
+    <div class="hero-scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" aria-labelledby="about-title">
+  <div class="about-inner">
+    <div class="about-img-wrap fade-in-left">
+      <div class="about-badge"><strong>13</strong><span>Years</span></div>
+      <img class="about-img-main" src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=800&q=80" alt="Inside The Hole in the Wall Café" loading="lazy" />
+      <img class="about-img-accent" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80" alt="Coffee at the café" loading="lazy" />
+    </div>
+    <div class="about-text fade-in-right">
+      <p class="section-label">Our Story</p>
+      <h2 class="section-title" id="about-title">A Little Café<br>With a Big <em>Heart</em></h2>
+      <div class="section-divider"></div>
+      <p>It started with a stubborn belief — that breakfast deserves the same care as any fine-dining experience. In 2011, we opened a tiny, seventeen-seater café in a lane off Indiranagar, and the neighbourhood adopted us overnight.</p>
+      <p>We source our eggs from a family farm in Chickballapur, our coffee from a single-origin estate in Coorg, and our bread is baked in-house every morning from 5 a.m. None of that has changed in thirteen years.</p>
+      <p>What started as a hole in the wall has grown into a community — a place where regulars know each other by name and first-timers always come back.</p>
+      <div class="about-stats">
+        <div class="stat fade-in" style="transition-delay:0.1s">
+          <span class="stat-num">13+</span>
+          <span class="stat-label">Years Open</span>
+        </div>
+        <div class="stat fade-in" style="transition-delay:0.2s">
+          <span class="stat-num">180+</span>
+          <span class="stat-label">Seats</span>
+        </div>
+        <div class="stat fade-in" style="transition-delay:0.3s">
+          <span class="stat-num">4.8★</span>
+          <span class="stat-label">Google Rating</span>
+        </div>
+        <div class="stat fade-in" style="transition-delay:0.4s">
+          <span class="stat-num">42k</span>
+          <span class="stat-label">Happy Guests</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu" aria-labelledby="menu-title">
+  <div class="menu-inner">
+    <div class="menu-header fade-in">
+      <p class="section-label">What We Serve</p>
+      <h2 class="section-title" id="menu-title">Crafted With <em>Love</em></h2>
+      <div class="section-divider centered"></div>
+      <p style="color:var(--text-light);max-width:480px;margin:0 auto;font-size:0.95rem;line-height:1.8;">Every item on our menu is made from scratch, seasoned with patience, and served with care. Here are some of our favourites.</p>
+    </div>
+    <div class="menu-tabs" role="tablist" aria-label="Menu categories">
+      <button class="menu-tab active" data-cat="breakfast" role="tab" aria-selected="true">Breakfast</button>
+      <button class="menu-tab" data-cat="beverages" role="tab" aria-selected="false">Beverages</button>
+      <button class="menu-tab" data-cat="specials" role="tab" aria-selected="false">Chef's Specials</button>
+    </div>
+    <div class="menu-grid" id="menuGrid">
+
+      <!-- BREAKFAST -->
+      <article class="menu-card active" data-cat="breakfast" role="article">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=75" alt="Avocado Toast" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Smashed Avocado Toast</h3>
+          <p class="menu-card-desc">Sourdough, whipped ricotta, cherry tomatoes, microgreens, chilli flakes, poached egg.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 295</span>
+            <span class="menu-tag tag-veg">Vegetarian</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card active" data-cat="breakfast">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&q=75" alt="Full English Breakfast" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">The Full English</h3>
+          <p class="menu-card-desc">Two farm eggs any style, smoked chicken sausage, baked beans, grilled tomato, hash brown, toast.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 445</span>
+            <span class="menu-tag tag-chef">Bestseller</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card active" data-cat="breakfast">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=75" alt="Pancakes" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Buttermilk Pancake Stack</h3>
+          <p class="menu-card-desc">Three fluffy pancakes, maple syrup, seasonal berries, whipped cream, candied pecans.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 325</span>
+            <span class="menu-tag tag-veg">Vegetarian</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card active" data-cat="breakfast">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&q=75" alt="French Toast" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Brioche French Toast</h3>
+          <p class="menu-card-desc">Thick-cut brioche, cinnamon custard dip, caramelised banana, salted caramel drizzle.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 275</span>
+            <span class="menu-tag tag-veg">Vegetarian</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card active" data-cat="breakfast">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?w=600&q=75" alt="Eggs Benedict" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Eggs Benedict</h3>
+          <p class="menu-card-desc">Toasted English muffin, pulled chicken, soft-poached egg, house hollandaise, chives.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 385</span>
+            <span class="menu-tag tag-chef">Chef's Pick</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card active" data-cat="breakfast">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&q=75" alt="Granola Bowl" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Honey Granola Bowl</h3>
+          <p class="menu-card-desc">House-made granola, Greek yoghurt, fresh mango, chia seeds, passionfruit coulis.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 245</span>
+            <span class="menu-tag tag-veg">Vegetarian</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- BEVERAGES -->
+      <article class="menu-card" data-cat="beverages">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=75" alt="Filter Coffee" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">South Indian Filter Coffee</h3>
+          <p class="menu-card-desc">Traditional drip-brewed Coorg blend, served hot in a brass dabarah-tumbler set.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 95</span>
+            <span class="menu-tag tag-chef">Heritage Brew</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card" data-cat="beverages">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=75" alt="Cold Brew" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Slow Cold Brew</h3>
+          <p class="menu-card-desc">18-hour cold-steeped Ethiopian Yirgacheffe, served over large clear ice, no sugar.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 175</span>
+            <span class="menu-tag tag-veg">Vegan</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card" data-cat="beverages">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=600&q=75" alt="Matcha Latte" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Ceremonial Matcha Latte</h3>
+          <p class="menu-card-desc">Ceremonial-grade Japanese matcha whisked with oat milk, lightly sweetened with kokuto.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 195</span>
+            <span class="menu-tag tag-veg">Vegan</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card" data-cat="beverages">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=600&q=75" alt="Fresh Juice" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Morning Blush Juice</h3>
+          <p class="menu-card-desc">Cold-pressed watermelon, mint, lime zest, and a pinch of Himalayan pink salt.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 145</span>
+            <span class="menu-tag tag-veg">Vegan</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card" data-cat="beverages">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=600&q=75" alt="Hot Chocolate" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Velvet Hot Chocolate</h3>
+          <p class="menu-card-desc">70% Valrhona dark chocolate, whole milk, topped with house-made marshmallow.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 185</span>
+            <span class="menu-tag tag-veg">Vegetarian</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card" data-cat="beverages">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=600&q=75" alt="Masala Chai" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">House Masala Chai</h3>
+          <p class="menu-card-desc">Strong Assam CTC tea, whole spices, ginger, full cream milk — simmered twenty minutes.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 85</span>
+            <span class="menu-tag tag-veg">Vegetarian</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- SPECIALS -->
+      <article class="menu-card" data-cat="specials">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600&q=75" alt="Shakshuka" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Spiced Shakshuka</h3>
+          <p class="menu-card-desc">Eggs poached in smoky tomato-harissa sauce, feta crumble, za'atar oil, warm pita.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 365</span>
+            <span class="menu-tag tag-chef">Chef's Special</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card" data-cat="specials">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=75" alt="Açaí Bowl" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Açaí Sunrise Bowl</h3>
+          <p class="menu-card-desc">Blended açaí, frozen banana, topped with granola, dragon fruit, kiwi, edible flowers.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 395</span>
+            <span class="menu-tag tag-veg">Vegan</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card" data-cat="specials">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=75" alt="Overnight Oats" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Weekend Brunch Board</h3>
+          <p class="menu-card-desc">Sharing platter — smoked salmon, truffle scrambled eggs, roasted tomatoes, artisan breads, jams.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 795</span>
+            <span class="menu-tag tag-chef">For Two</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card" data-cat="specials">
+        <div style="overflow:hidden;height:180px">
+          <img class="menu-card-img" src="https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&q=75" alt="Waffles" loading="lazy" />
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Belgian Waffle &amp; Chicken</h3>
+          <p class="menu-card-desc">Crispy fried chicken on a fluffy waffle, hot honey, chive butter, bread-and-butter pickles.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">₹ 475</span>
+            <span class="menu-tag tag-chef">Chef's Special</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" aria-labelledby="gallery-title">
+  <div class="gallery-inner">
+    <div class="gallery-header fade-in">
+      <p class="section-label">The Ambiance</p>
+      <h2 class="section-title" id="gallery-title">A Feast for the <em>Eyes</em></h2>
+      <div class="section-divider centered"></div>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item fade-in" style="transition-delay:0s">
+        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=80" alt="Café interior with warm lighting" loading="lazy" />
+        <div class="gallery-overlay"><span class="gallery-icon">✦</span></div>
+      </div>
+      <div class="gallery-item fade-in" style="transition-delay:0.08s">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80" alt="Morning light through café window" loading="lazy" />
+        <div class="gallery-overlay"><span class="gallery-icon">✦</span></div>
+      </div>
+      <div class="gallery-item fade-in" style="transition-delay:0.16s">
+        <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400&q=80" alt="Espresso being poured" loading="lazy" />
+        <div class="gallery-overlay"><span class="gallery-icon">✦</span></div>
+      </div>
+      <div class="gallery-item fade-in" style="transition-delay:0.24s">
+        <img src="https://images.unsplash.com/photo-1459755486867-b55449bb39ff?w=400&q=80" alt="Freshly baked croissant" loading="lazy" />
+        <div class="gallery-overlay"><span class="gallery-icon">✦</span></div>
+      </div>
+      <div class="gallery-item fade-in" style="transition-delay:0.32s">
+        <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=800&q=80" alt="Café seating area" loading="lazy" />
+        <div class="gallery-overlay"><span class="gallery-icon">✦</span></div>
+      </div>
+      <div class="gallery-item fade-in" style="transition-delay:0.4s">
+        <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80" alt="Breakfast plate with fresh fruits" loading="lazy" />
+        <div class="gallery-overlay"><span class="gallery-icon">✦</span></div>
+      </div>
+      <div class="gallery-item fade-in" style="transition-delay:0.48s">
+        <img src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e?w=400&q=80" alt="Pancakes with berries" loading="lazy" />
+        <div class="gallery-overlay"><span class="gallery-icon">✦</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVATION -->
+<section id="reservation" aria-labelledby="reservation-title">
+  <div class="reservation-inner">
+    <div class="reservation-info fade-in-left">
+      <p class="section-label">Reserve Your Spot</p>
+      <h2 class="section-title" id="reservation-title">Book a <em>Table</em></h2>
+      <div class="section-divider"></div>
+      <p>Mornings go fast. Secure your table ahead of time and walk in to the smell of fresh coffee and warm bread — no waiting, no missing out.</p>
+      <div class="res-contact">
+        <div class="res-contact-item">
+          <div class="res-icon">📍</div>
+          <span>12th Main, HAL 2nd Stage,<br>Indiranagar, Bangalore 560 008</span>
+        </div>
+        <div class="res-contact-item">
+          <div class="res-icon">📞</div>
+          <span>+91 80 4567 8900<br>+91 98450 12345</span>
+        </div>
+        <div class="res-contact-item">
+          <div class="res-icon">🕐</div>
+          <span>Mon – Fri: 7:30 AM – 3:00 PM<br>Sat – Sun: 7:00 AM – 4:00 PM</span>
+        </div>
+      </div>
+    </div>
+    <div class="res-form fade-in-right" id="resFormWrap">
+      <div id="resFormContent">
+        <div class="form-group">
+          <label for="resName">Full Name</label>
+          <input type="text" id="resName" placeholder="Priya Sharma" autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label for="resPhone">Phone Number</label>
+          <input type="tel" id="resPhone" placeholder="+91 98XXX XXXXX" autocomplete="tel" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="resDate">Date</label>
+            <input type="date" id="resDate" />
+          </div>
+          <div class="form-group">
+            <label for="resTime">Time</label>
+            <input type="time" id="resTime" min="07:00" max="15:30" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="resGuests">Number of Guests</label>
+          <select id="resGuests">
+            <option value="" disabled selected>Select guests</option>
+            <option value="1">1 Guest</option>
+            <option value="2">2 Guests</option>
+            <option value="3">3 Guests</option>
+            <option value="4">4 Guests</option>
+            <option value="5">5 Guests</option>
+            <option value="6">6 Guests</option>
+            <option value="7-8">7–8 Guests</option>
+            <option value="9+">9+ Guests (call us)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="resNote">Special Requests (optional)</label>
+          <input type="text" id="resNote" placeholder="Window seat, birthday, dietary needs…" />
+        </div>
+        <button class="btn-submit" id="resSubmit" type="button">Confirm Reservation →</button>
+      </div>
+      <div class="form-success" id="formSuccess">
+        <div class="checkmark">✓</div>
+        <h3>You're all set!</h3>
+        <p>We've received your reservation and will send a confirmation to your phone shortly. See you soon!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews" aria-labelledby="reviews-title">
+  <div class="reviews-inner">
+    <div class="reviews-header fade-in">
+      <p class="section-label">What People Say</p>
+      <h2 class="section-title" id="reviews-title">Loved by <em>Bangalore</em></h2>
+      <div class="section-divider centered"></div>
+    </div>
+    <div class="reviews-slider" aria-label="Customer reviews">
+      <div class="reviews-track" id="reviewsTrack">
+
+        <div class="review-card">
+          <div class="review-stars" aria-label="5 stars">★★★★★</div>
+          <p class="review-text">"Honestly the best breakfast I have had in Bangalore. The Eggs Benedict is a religious experience. I've been coming every weekend for two years and the quality never dips."</p>
+          <div class="reviewer">
+            <img class="reviewer-img" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="Ananya Krishnamurthy" loading="lazy" />
+            <div class="reviewer-info">
+              <strong>Ananya Krishnamurthy</strong>
+              <span>Indiranagar regular · Google Review</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-stars" aria-label="5 stars">★★★★★</div>
+          <p class="review-text">"The filter coffee alone is worth the trip. You can taste the difference between this and any chain café. Cozy, unhurried, and the staff remember your name. That's rare."</p>
+          <div class="reviewer">
+            <img class="reviewer-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Rohit Menon" loading="lazy" />
+            <div class="reviewer-info">
+              <strong>Rohit Menon</strong>
+              <span>Koramangala · Zomato Review</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-stars" aria-label="5 stars">★★★★★</div>
+          <p class="review-text">"Brought my parents here on their visit to Bangalore. They kept asking me why we don't have something like this in Chennai. The Brunch Board for two is an absolute spread."</p>
+          <div class="reviewer">
+            <img class="reviewer-img" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="Deepika Subramaniam" loading="lazy" />
+            <div class="reviewer-info">
+              <strong>Deepika Subramaniam</strong>
+              <span>Whitefield · Instagram</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-stars" aria-label="5 stars">★★★★★</div>
+          <p class="review-text">"I work remotely and this is my office two mornings a week. The Wi-Fi is fast, the music is just right, and the Matcha Latte is the only reason I get out of bed before 9."</p>
+          <div class="reviewer">
+            <img class="reviewer-img" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80" alt="Kiran Rao" loading="lazy" />
+            <div class="reviewer-info">
+              <strong>Kiran Rao</strong>
+              <span>HSR Layout · Google Review</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-stars" aria-label="5 stars">★★★★★</div>
+          <p class="review-text">"Came for a birthday brunch and they set up the table so beautifully without me asking. The pancakes had a candle on them. Little things like that make a place worth returning to."</p>
+          <div class="reviewer">
+            <img class="reviewer-img" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80" alt="Meera Pillai" loading="lazy" />
+            <div class="reviewer-info">
+              <strong>Meera Pillai</strong>
+              <span>Jayanagar · Swiggy Dineout</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="slider-controls">
+      <button class="slider-btn" id="prevReview" aria-label="Previous review">&#8592;</button>
+      <div class="slider-dots" id="sliderDots"></div>
+      <button class="slider-btn" id="nextReview" aria-label="Next review">&#8594;</button>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section id="location" aria-labelledby="location-title">
+  <div class="location-inner">
+    <div class="location-info fade-in-left">
+      <p class="section-label">Find Us</p>
+      <h2 class="section-title" id="location-title">Come Say <em>Hello</em></h2>
+      <div class="section-divider"></div>
+      <div class="location-detail">
+        <div class="loc-item">
+          <div class="loc-icon">📍</div>
+          <div>
+            <strong>Address</strong>
+            <p>12th Main, HAL 2nd Stage, Indiranagar<br>Bangalore – 560 008, Karnataka</p>
+          </div>
+        </div>
+        <div class="loc-item">
+          <div class="loc-icon">📞</div>
+          <div>
+            <strong>Phone</strong>
+            <p>+91 80 4567 8900<br>+91 98450 12345</p>
+          </div>
+        </div>
+        <div class="loc-item">
+          <div class="loc-icon">✉️</div>
+          <div>
+            <strong>Email</strong>
+            <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d3bbb6bfbfbc93bbbcbfb6babda7bbb6a4b2bfbffdbabd">[email&#160;protected]</a></p>
+          </div>
+        </div>
+        <div class="loc-item">
+          <div class="loc-icon">🕐</div>
+          <div>
+            <strong>Opening Hours</strong>
+            <p>Monday – Friday: 7:30 AM – 3:00 PM<br>Saturday – Sunday: 7:00 AM – 4:00 PM<br><em style="color:var(--caramel);font-size:0.8rem">Kitchen closes 30 mins before</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="map-wrap fade-in-right">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.9854039434!2d77.6398!3d12.9784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae17d1c80f9be9%3A0x49c5d3d4df254a84!2sIndiranagar%2C%20Bengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="The Hole in the Wall Café location map"
+        aria-label="Map showing café location in Indiranagar, Bangalore">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#hero" class="nav-logo" aria-label="Back to top">
+        <span>The Hole in the Wall</span>
+        <span>Café &amp; Breakfast Bar · Bangalore</span>
+      </a>
+      <p>A little café with a big heart, serving Bangalore's most beloved breakfasts since 2011. Every morning is a fresh start.</p>
+      <div class="footer-social" aria-label="Social media links">
+        <a href="#" class="social-btn" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="#" class="social-btn" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="#" class="social-btn" aria-label="Twitter / X">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+        </a>
+        <a href="#" class="social-btn" aria-label="YouTube">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul class="footer-links">
+        <li><a href="#about">Our Story</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#reservation">Book a Table</a></li>
+        <li><a href="#location">Visit Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Opening Hours</h4>
+      <div class="hours-list">
+        <div class="hours-item"><span>Mon – Fri</span><span>7:30 – 15:00</span></div>
+        <div class="hours-item"><span>Saturday</span><span>7:00 – 16:00</span></div>
+        <div class="hours-item"><span>Sunday</span><span>7:00 – 16:00</span></div>
+        <div class="hours-item" style="margin-top:0.5rem;border-top:1px solid rgba(255,253,249,0.1);padding-top:0.5rem"><span>Public Holidays</span><span>8:00 – 14:00</span></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul class="footer-links">
+        <li><a href="tel:+918045678900">+91 80 4567 8900</a></li>
+        <li><a href="tel:+919845012345">+91 98450 12345</a></li>
+        <li><a href="/cdn-cgi/l/email-protection#147c7178787b547c7b78717d7a607c71637578783a7d7a"><span class="__cf_email__" data-cfemail="e78f828b8b88a78f888b828e89938f8290868b8bc98e89">[email&#160;protected]</span></a></li>
+      </ul>
+      <div style="margin-top:1.25rem">
+        <h4>Legal</h4>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 The Hole in the Wall Café. All rights reserved.</span>
+    <span>Made with ☕ in Bangalore</span>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer">✕</button>
+  <img id="lightboxImg" src="" alt="" />
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // ── NAVBAR SCROLL ──
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  // ── HERO BG ──
+  const heroBg = document.getElementById('heroBg');
+  setTimeout(() => heroBg.classList.add('loaded'), 100);
+
+  // ── HAMBURGER ──
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    const open = hamburger.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+    mobileMenu.classList.toggle('open', open);
+  });
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', false);
+      mobileMenu.classList.remove('open');
+    });
+  });
+  document.addEventListener('click', e => {
+    if (!navbar.contains(e.target) && !mobileMenu.contains(e.target)) {
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', false);
+      mobileMenu.classList.remove('open');
+    }
+  });
+
+  // ── SCROLL ANIMATIONS ──
+  const observers = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observers.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right').forEach(el => observers.observe(el));
+
+  // ── MENU TABS ──
+  const tabs = document.querySelectorAll('.menu-tab');
+  const cards = document.querySelectorAll('.menu-card');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const cat = tab.dataset.cat;
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+      tab.classList.add('active'); tab.setAttribute('aria-selected', 'true');
+      cards.forEach(c => {
+        c.classList.toggle('active', c.dataset.cat === cat);
+      });
+    });
+  });
+
+  // ── REVIEWS SLIDER ──
+  const track = document.getElementById('reviewsTrack');
+  const allCards = track.querySelectorAll('.review-card');
+  const dotsWrap = document.getElementById('sliderDots');
+  let current = 0;
+  let perView = window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 2 : 3;
+  const total = Math.ceil(allCards.length / perView);
+
+  function buildDots() {
+    dotsWrap.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const d = document.createElement('button');
+      d.className = 'dot' + (i === current ? ' active' : '');
+      d.setAttribute('aria-label', `Review page ${i + 1}`);
+      d.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(d);
+    }
+  }
+
+  function goTo(idx) {
+    current = Math.max(0, Math.min(idx, total - 1));
+    const cardW = allCards[0].offsetWidth;
+    const gap = 24;
+    track.style.transform = `translateX(-${current * perView * (cardW + gap)}px)`;
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  document.getElementById('prevReview').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('nextReview').addEventListener('click', () => goTo(current + 1));
+  buildDots();
+
+  window.addEventListener('resize', () => {
+    perView = window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 2 : 3;
+    current = 0;
+    buildDots();
+    goTo(0);
+  });
+
+  // auto-advance
+  setInterval(() => goTo((current + 1) % total), 5000);
+
+  // ── GALLERY LIGHTBOX ──
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.gallery-item img').forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src.replace(/w=\d+/, 'w=1200');
+      lightboxImg.alt = img.alt;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── RESERVATION FORM ──
+  document.getElementById('resSubmit').addEventListener('click', () => {
+    const name = document.getElementById('resName').value.trim();
+    const phone = document.getElementById('resPhone').value.trim();
+    const date = document.getElementById('resDate').value;
+    const time = document.getElementById('resTime').value;
+    const guests = document.getElementById('resGuests').value;
+    if (!name || !phone || !date || !time || !guests) {
+      const fields = [
+        ['resName', name], ['resPhone', phone], ['resDate', date],
+        ['resTime', time], ['resGuests', guests]
+      ];
+      fields.forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        el.style.borderColor = val ? '' : '#e57373';
+        el.addEventListener('input', () => el.style.borderColor = '', { once: true });
+      });
+      return;
+    }
+    document.getElementById('resFormContent').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  });
+
+  // ── SET MIN DATE ──
+  const dateInput = document.getElementById('resDate');
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.min = today;
+
+  // ── SMOOTH ANCHOR ──
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', e => {
+      const target = document.querySele
+  // ── SET MIN DATE ──
+  const dateInput = document.getElementById('resDate');
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.min = today;
+
+  // ── SMOOTH ANCHOR ──
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', e => {
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+</script>
+<!-- Razorpay + Backend Integration -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/js/api-connector.js"></script>
+</body>
+</html>
