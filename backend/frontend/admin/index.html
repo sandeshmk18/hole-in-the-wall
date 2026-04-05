@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — The Hole in the Wall Café</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#f7f5f2;--sidebar:#1e1410;--sidebar-w:240px;
+      --card:#fff;--border:#ede8e0;
+      --brown:#3b2314;--caramel:#c8885a;--gold:#d4a84b;
+      --green:#4caf7d;--red:#e05252;--blue:#5b8def;
+      --text:#2c1a0e;--muted:#8a6850;
+      --shadow:0 2px 12px rgba(59,35,20,0.08);
+    }
+    html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+
+    /* ── LOGIN ── */
+    #loginPage{
+      display:flex;align-items:center;justify-content:center;
+      min-height:100vh;background:var(--sidebar);
+    }
+    .login-box{
+      background:#2c1a0e;border-radius:12px;padding:2.5rem;
+      width:100%;max-width:380px;box-shadow:0 24px 64px rgba(0,0,0,0.4);
+    }
+    .login-logo{text-align:center;margin-bottom:2rem}
+    .login-logo h1{font-family:'Playfair Display',serif;color:#faf6f0;font-size:1.5rem}
+    .login-logo p{color:#a0613a;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;margin-top:4px}
+    .login-box label{display:block;color:rgba(255,253,249,0.6);font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;margin-top:1.25rem}
+    .login-box input{
+      width:100%;padding:0.7rem 1rem;
+      background:rgba(255,253,249,0.07);border:1.5px solid rgba(255,253,249,0.12);
+      border-radius:6px;color:#faf6f0;font-size:0.9rem;outline:none;
+      transition:border-color 0.2s;
+    }
+    .login-box input:focus{border-color:var(--caramel)}
+    .login-btn{
+      width:100%;margin-top:1.75rem;padding:0.8rem;
+      background:var(--caramel);color:white;border:none;border-radius:6px;
+      font-weight:700;font-size:0.85rem;letter-spacing:0.05em;cursor:pointer;
+      transition:background 0.2s;
+    }
+    .login-btn:hover{background:var(--gold)}
+    .login-error{color:#e05252;font-size:0.8rem;margin-top:0.75rem;text-align:center}
+
+    /* ── LAYOUT ── */
+    #app{display:none;height:100vh;flex-direction:row}
+    .sidebar{
+      width:var(--sidebar-w);background:var(--sidebar);
+      display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;
+    }
+    .sidebar-logo{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,253,249,0.08)}
+    .sidebar-logo h1{font-family:'Playfair Display',serif;color:#faf6f0;font-size:1rem;line-height:1.3}
+    .sidebar-logo p{color:#a0613a;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;margin-top:3px}
+    .sidebar-nav{padding:1rem 0;flex:1}
+    .nav-section-label{padding:0.5rem 1.25rem;font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,253,249,0.3);margin-top:0.5rem}
+    .nav-item{
+      display:flex;align-items:center;gap:0.75rem;
+      padding:0.65rem 1.25rem;cursor:pointer;
+      color:rgba(255,253,249,0.55);font-size:0.85rem;font-weight:500;
+      transition:background 0.2s,color 0.2s;border-left:3px solid transparent;
+    }
+    .nav-item:hover{background:rgba(255,253,249,0.05);color:rgba(255,253,249,0.9)}
+    .nav-item.active{background:rgba(200,136,90,0.12);color:#e2b48a;border-left-color:var(--caramel)}
+    .nav-item .icon{font-size:1rem;width:20px;text-align:center}
+    .sidebar-footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,253,249,0.08)}
+    .logout-btn{
+      width:100%;padding:0.6rem;background:rgba(255,253,249,0.06);
+      border:1px solid rgba(255,253,249,0.1);border-radius:6px;
+      color:rgba(255,253,249,0.6);font-size:0.8rem;cursor:pointer;
+      transition:background 0.2s;
+    }
+    .logout-btn:hover{background:rgba(224,82,82,0.2);color:#e05252;border-color:#e05252}
+
+    /* ── MAIN ── */
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .topbar{
+      background:white;padding:0 1.5rem;height:56px;
+      display:flex;align-items:center;justify-content:space-between;
+      border-bottom:1px solid var(--border);flex-shrink:0;
+    }
+    .topbar h2{font-size:1rem;font-weight:600;color:var(--brown)}
+    .topbar-right{display:flex;align-items:center;gap:1rem}
+    .admin-badge{
+      background:var(--bg);border:1px solid var(--border);
+      border-radius:20px;padding:0.3rem 0.75rem;
+      font-size:0.75rem;font-weight:600;color:var(--muted);
+    }
+    .content{flex:1;overflow-y:auto;padding:1.5rem}
+
+    /* ── PAGES ── */
+    .page{display:none}
+    .page.active{display:block}
+
+    /* ── STATS GRID ── */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+    .stat-card{
+      background:var(--card);border-radius:10px;padding:1.25rem;
+      box-shadow:var(--shadow);border:1px solid var(--border);
+      display:flex;flex-direction:column;gap:0.25rem;
+    }
+    .stat-card .label{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
+    .stat-card .value{font-size:1.75rem;font-weight:700;color:var(--brown);line-height:1}
+    .stat-card .sub{font-size:0.75rem;color:var(--muted)}
+    .stat-card .icon-wrap{
+      width:38px;height:38px;border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.1rem;margin-bottom:0.5rem;
+    }
+
+    /* ── CHART ── */
+    .chart-card{
+      background:var(--card);border-radius:10px;padding:1.25rem;
+      box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:1.5rem;
+    }
+    .chart-card h3{font-size:0.88rem;font-weight:600;color:var(--brown);margin-bottom:1rem}
+    .chart-wrap{height:220px;position:relative}
+
+    /* ── TABLE ── */
+    .table-card{
+      background:var(--card);border-radius:10px;
+      box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem;
+    }
+    .table-header{
+      padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;
+      border-bottom:1px solid var(--border);
+    }
+    .table-header h3{font-size:0.88rem;font-weight:600;color:var(--brown)}
+    .table-actions{display:flex;gap:0.5rem;align-items:center}
+    table{width:100%;border-collapse:collapse}
+    th{
+      padding:0.65rem 1rem;text-align:left;
+      font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
+      color:var(--muted);background:#faf8f5;border-bottom:1px solid var(--border);
+    }
+    td{padding:0.75rem 1rem;font-size:0.83rem;border-bottom:1px solid #f5f0ea;color:var(--text)}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fdf9f5}
+
+    /* ── BADGES ── */
+    .badge{
+      display:inline-block;padding:0.2rem 0.65rem;border-radius:20px;
+      font-size:0.7rem;font-weight:700;text-transform:capitalize;
+    }
+    .badge-pending{background:#fff3e0;color:#e65100}
+    .badge-confirmed{background:#e8f5e9;color:#2e7d32}
+    .badge-cancelled{background:#ffebee;color:#c62828}
+    .badge-completed{background:#e3f2fd;color:#1565c0}
+    .badge-preparing{background:#f3e5f5;color:#6a1b9a}
+    .badge-paid{background:#e8f5e9;color:#2e7d32}
+    .badge-failed{background:#ffebee;color:#c62828}
+    .badge-ready{background:#e0f7fa;color:#00696f}
+    .badge-delivered{background:#e8f5e9;color:#2e7d32}
+
+    /* ── BUTTONS ── */
+    .btn{
+      padding:0.45rem 0.9rem;border-radius:6px;font-size:0.78rem;
+      font-weight:600;cursor:pointer;border:none;transition:opacity 0.2s,transform 0.1s;
+    }
+    .btn:hover{opacity:0.88;transform:translateY(-1px)}
+    .btn-primary{background:var(--caramel);color:white}
+    .btn-sm{padding:0.3rem 0.65rem;font-size:0.72rem}
+    .btn-ghost{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+    .btn-danger{background:var(--red);color:white}
+    .btn-success{background:var(--green);color:white}
+
+    /* ── FILTERS ── */
+    .filter-row{display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+    .filter-select,.filter-input{
+      padding:0.45rem 0.75rem;border:1px solid var(--border);
+      border-radius:6px;font-size:0.82rem;background:white;color:var(--text);
+      outline:none;
+    }
+    .filter-select:focus,.filter-input:focus{border-color:var(--caramel)}
+
+    /* ── MENU GRID ── */
+    .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-top:1rem}
+    .menu-admin-card{
+      background:var(--card);border-radius:10px;border:1px solid var(--border);
+      overflow:hidden;box-shadow:var(--shadow);
+    }
+    .menu-admin-card img{width:100%;height:140px;object-fit:cover;display:block}
+    .menu-admin-body{padding:0.85rem}
+    .menu-admin-body h4{font-size:0.88rem;font-weight:600;color:var(--brown);margin-bottom:2px}
+    .menu-admin-body p{font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem;line-height:1.5}
+    .menu-admin-footer{display:flex;justify-content:space-between;align-items:center;margin-top:0.75rem}
+
+    /* ── MODAL ── */
+    .modal-overlay{
+      display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
+      z-index:1000;align-items:center;justify-content:center;
+    }
+    .modal-overlay.open{display:flex}
+    .modal{
+      background:white;border-radius:12px;width:100%;max-width:480px;
+      max-height:90vh;overflow-y:auto;padding:1.75rem;
+    }
+    .modal h3{font-size:1rem;font-weight:700;color:var(--brown);margin-bottom:1.25rem}
+    .form-group{margin-bottom:1rem}
+    .form-group label{display:block;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:5px}
+    .form-group input,.form-group select,.form-group textarea{
+      width:100%;padding:0.65rem 0.85rem;border:1.5px solid var(--border);
+      border-radius:6px;font-size:0.88rem;color:var(--text);outline:none;
+      transition:border-color 0.2s;font-family:inherit;
+    }
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--caramel)}
+    .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+    .modal-footer{display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.25rem}
+
+    /* ── TOGGLE ── */
+    .toggle{
+      position:relative;display:inline-block;width:38px;height:21px;
+    }
+    .toggle input{opacity:0;width:0;height:0}
+    .toggle-slider{
+      position:absolute;inset:0;background:#ccc;border-radius:21px;
+      cursor:pointer;transition:background 0.3s;
+    }
+    .toggle-slider::before{
+      content:'';position:absolute;width:15px;height:15px;
+      border-radius:50%;background:white;
+      left:3px;bottom:3px;transition:transform 0.3s;
+    }
+    .toggle input:checked + .toggle-slider{background:var(--green)}
+    .toggle input:checked + .toggle-slider::before{transform:translateX(17px)}
+
+    /* ── EMPTY STATE ── */
+    .empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
+    .empty .icon{font-size:2.5rem;margin-bottom:0.75rem;opacity:0.5}
+
+    /* ── LOADING ── */
+    .spinner{
+      width:28px;height:28px;border:3px solid var(--border);
+      border-top-color:var(--caramel);border-radius:50%;
+      animation:spin 0.8s linear infinite;margin:2rem auto;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @media(max-width:900px){
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+      .sidebar{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage">
+  <div class="login-box">
+    <div class="login-logo">
+      <h1>The Hole in the Wall</h1>
+      <p>Admin Dashboard</p>
+    </div>
+    <label>Email</label>
+    <input type="email" id="loginEmail" placeholder="admin@holeinthewall.in" />
+    <label>Password</label>
+    <input type="password" id="loginPassword" placeholder="••••••••" />
+    <button class="login-btn" id="loginBtn">Sign In →</button>
+    <p class="login-error" id="loginError"></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h1>Hole in the Wall</h1>
+      <p>Admin Panel</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-item active" data-page="dashboard"><span class="icon">📊</span> Dashboard</div>
+      <div class="nav-section-label">Operations</div>
+      <div class="nav-item" data-page="reservations"><span class="icon">📅</span> Reservations</div>
+      <div class="nav-item" data-page="orders"><span class="icon">🍳</span> Orders</div>
+      <div class="nav-section-label">Café</div>
+      <div class="nav-item" data-page="menu"><span class="icon">🍽️</span> Menu Items</div>
+      <div class="nav-item" data-page="payments"><span class="icon">💳</span> Payments</div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" id="logoutBtn">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <h2 id="pageTitle">Dashboard</h2>
+      <div class="topbar-right">
+        <span class="admin-badge" id="adminBadge">Admin</span>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD PAGE -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid" id="statsGrid">
+          <div class="spinner"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:1rem">
+          <div class="chart-card">
+            <h3>Revenue — Last 7 Days</h3>
+            <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>Orders — Last 7 Days</h3>
+            <div class="chart-wrap"><canvas id="ordersChart"></canvas></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="table-card">
+            <div class="table-header"><h3>Recent Reservations (Today+)</h3></div>
+            <div id="dashReservations"><div class="spinner"></div></div>
+          </div>
+          <div class="table-card">
+            <div class="table-header"><h3>Recent Orders</h3></div>
+            <div id="dashOrders"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESERVATIONS PAGE -->
+      <div class="page" id="page-reservations">
+        <div class="filter-row">
+          <input type="date" class="filter-input" id="resFilterDate" />
+          <select class="filter-select" id="resFilterStatus">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="completed">Completed</option>
+          </select>
+          <button class="btn btn-ghost" onclick="loadReservations()">🔄 Refresh</button>
+        </div>
+        <div class="table-card">
+          <div class="table-header">
+            <h3>All Reservations</h3>
+            <span id="resCount" style="font-size:0.75rem;color:var(--muted)"></span>
+          </div>
+          <div id="reservationsTable"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- ORDERS PAGE -->
+      <div class="page" id="page-orders">
+        <div class="filter-row">
+          <select class="filter-select" id="orderFilterStatus">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="preparing">Preparing</option>
+            <option value="ready">Ready</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <button class="btn btn-ghost" onclick="loadOrders()">🔄 Refresh</button>
+        </div>
+        <div class="table-card">
+          <div class="table-header">
+            <h3>All Orders</h3>
+            <span id="ordersCount" style="font-size:0.75rem;color:var(--muted)"></span>
+          </div>
+          <div id="ordersTable"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- MENU PAGE -->
+      <div class="page" id="page-menu">
+        <div class="filter-row">
+          <select class="filter-select" id="menuFilterCat">
+            <option value="">All Categories</option>
+            <option value="breakfast">Breakfast</option>
+            <option value="beverages">Beverages</option>
+            <option value="specials">Specials</option>
+          </select>
+          <button class="btn btn-primary" onclick="openMenuModal()">+ Add Item</button>
+          <button class="btn btn-ghost" onclick="loadMenu()">🔄 Refresh</button>
+        </div>
+        <div class="menu-grid" id="menuGrid"><div class="spinner"></div></div>
+      </div>
+
+      <!-- PAYMENTS PAGE -->
+      <div class="page" id="page-payments">
+        <div class="table-card">
+          <div class="table-header">
+            <h3>Payment Transactions</h3>
+            <button class="btn btn-ghost" onclick="loadPayments()">🔄 Refresh</button>
+          </div>
+          <div id="paymentsTable"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MENU MODAL -->
+<div class="modal-overlay" id="menuModal">
+  <div class="modal">
+    <h3 id="menuModalTitle">Add Menu Item</h3>
+    <input type="hidden" id="menuItemId"/>
+    <div class="form-row-2">
+      <div class="form-group"><label>Name</label><input type="text" id="menuName" placeholder="Avocado Toast"/></div>
+      <div class="form-group"><label>Price (₹)</label><input type="number" id="menuPrice" placeholder="295"/></div>
+    </div>
+    <div class="form-group"><label>Description</label><textarea id="menuDesc" rows="2" placeholder="Short description..."></textarea></div>
+    <div class="form-row-2">
+      <div class="form-group"><label>Category</label>
+        <select id="menuCategory">
+          <option value="breakfast">Breakfast</option>
+          <option value="beverages">Beverages</option>
+          <option value="specials">Specials</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Type</label>
+        <select id="menuIsVeg">
+          <option value="true">Vegetarian</option>
+          <option value="false">Non-Veg</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>Image URL</label><input type="url" id="menuImage" placeholder="https://images.unsplash.com/..."/></div>
+    <div class="form-group"><label>Tags (comma separated)</label><input type="text" id="menuTags" placeholder="Bestseller, Chef's Pick"/></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeMenuModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMenuItem()">Save Item</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api';
+let token = localStorage.getItem('cafe_token');
+let adminData = null;
+let revenueChart = null, ordersChart = null;
+
+const api = async (path, opts = {}) => {
+  const res = await fetch(API + path, {
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    ...opts,
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Error');
+  return data;
+};
+
+// ── AUTH ──────────────────────────────────────────
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const err = document.getElementById('loginError');
+  err.textContent = '';
+  try {
+    const data = await api('/auth/login', { method: 'POST', body: { email, password } });
+    token = data.token;
+    adminData = data.admin;
+    localStorage.setItem('cafe_token', token);
+    showApp();
+  } catch (e) { err.textContent = e.message; }
+});
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('loginBtn').click();
+});
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  token = null; localStorage.removeItem('cafe_token');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+});
+
+const showApp = () => {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('adminBadge').textContent = adminData?.name || 'Admin';
+  loadDashboard();
+};
+
+// ── NAVIGATION ──────────────────────────────────────
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    item.classList.add('active');
+    const page = item.dataset.page;
+    document.getElementById(`page-${page}`).classList.add('active');
+    document.getElementById('pageTitle').textContent = item.textContent.trim();
+    if (page === 'dashboard') loadDashboard();
+    if (page === 'reservations') loadReservations();
+    if (page === 'orders') loadOrders();
+    if (page === 'menu') loadMenu();
+    if (page === 'payments') loadPayments();
+  });
+});
+
+// ── DASHBOARD ───────────────────────────────────────
+const loadDashboard = async () => {
+  try {
+    const [stats, chart] = await Promise.all([api('/admin/stats'), api('/admin/revenue-chart')]);
+    renderStats(stats.stats);
+    renderCharts(chart.data);
+    renderDashReservations(stats.recentReservations);
+    renderDashOrders(stats.recentOrders);
+  } catch (e) { console.error(e); }
+};
+
+const renderStats = (s) => {
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card">
+      <div class="icon-wrap" style="background:#fff3e0">📅</div>
+      <div class="label">Today's Reservations</div>
+      <div class="value">${s.todayReservations}</div>
+      <div class="sub">${s.pendingReservations} pending confirmation</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon-wrap" style="background:#e8f5e9">💰</div>
+      <div class="label">Today's Revenue</div>
+      <div class="value">₹${s.todayRevenue.toLocaleString('en-IN')}</div>
+      <div class="sub">₹${s.monthlyRevenue.toLocaleString('en-IN')} this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon-wrap" style="background:#e3f2fd">🍳</div>
+      <div class="label">Total Orders</div>
+      <div class="value">${s.totalOrders}</div>
+      <div class="sub">${s.paidOrders} paid</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon-wrap" style="background:#f3e5f5">🍽️</div>
+      <div class="label">Menu Items</div>
+      <div class="value">${s.menuCount}</div>
+      <div class="sub">${s.totalReservations} total reservations</div>
+    </div>
+  `;
+};
+
+const renderCharts = (data) => {
+  const labels = data.map(d => d.date);
+  const revenues = data.map(d => d.revenue);
+  const orders = data.map(d => d.orders);
+  const cfg = (label, vals, color) => ({
+    type: 'bar',
+    data: { labels, datasets: [{ label, data: vals, backgroundColor: color + '33', borderColor: color, borderWidth: 2, borderRadius: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f0ebe3' } }, x: { grid: { display: false } } } }
+  });
+  if (revenueChart) revenueChart.destroy();
+  if (ordersChart) ordersChart.destroy();
+  revenueChart = new Chart(document.getElementById('revenueChart'), cfg('Revenue (₹)', revenues, '#c8885a'));
+  ordersChart = new Chart(document.getElementById('ordersChart'), cfg('Orders', orders, '#5b8def'));
+};
+
+const renderDashReservations = (list) => {
+  if (!list?.length) { document.getElementById('dashReservations').innerHTML = '<div class="empty"><div class="icon">📅</div><p>No upcoming reservations</p></div>'; return; }
+  document.getElementById('dashReservations').innerHTML = `<table><thead><tr><th>Name</th><th>Date & Time</th><th>Guests</th><th>Status</th></tr></thead><tbody>
+    ${list.map(r => `<tr><td>${r.name}</td><td>${new Date(r.date).toLocaleDateString('en-IN')} ${r.time}</td><td>${r.guests}</td><td><span class="badge badge-${r.status}">${r.status}</span></td></tr>`).join('')}
+  </tbody></table>`;
+};
+
+const renderDashOrders = (list) => {
+  if (!list?.length) { document.getElementById('dashOrders').innerHTML = '<div class="empty"><div class="icon">🍳</div><p>No recent orders</p></div>'; return; }
+  document.getElementById('dashOrders').innerHTML = `<table><thead><tr><th>Customer</th><th>Total</th><th>Type</th><th>Status</th></tr></thead><tbody>
+    ${list.map(o => `<tr><td>${o.customerName}</td><td>₹${o.total}</td><td>${o.orderType}</td><td><span class="badge badge-${o.status}">${o.status}</span></td></tr>`).join('')}
+  </tbody></table>`;
+};
+
+// ── RESERVATIONS ────────────────────────────────────
+const loadReservations = async () => {
+  const status = document.getElementById('resFilterStatus').value;
+  const date = document.getElementById('resFilterDate').value;
+  let qs = `?limit=50${status ? '&status=' + status : ''}${date ? '&date=' + date : ''}`;
+  try {
+    const data = await api('/reservations' + qs);
+    document.getElementById('resCount').textContent = `${data.total} total`;
+    if (!data.reservations.length) {
+      document.getElementById('reservationsTable').innerHTML = '<div class="empty"><div class="icon">📅</div><p>No reservations found</p></div>';
+      return;
+    }
+    document.getElementById('reservationsTable').innerHTML = `
+      <table><thead><tr><th>Name</th><th>Phone</th><th>Date & Time</th><th>Guests</th><th>Note</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+        ${data.reservations.map(r => `
+          <tr>
+            <td><strong>${r.name}</strong></td>
+            <td>${r.phone}</td>
+            <td>${new Date(r.date).toLocaleDateString('en-IN')} at ${r.time}</td>
+            <td>${r.guests}</td>
+            <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.specialNote || '—'}</td>
+            <td><span class="badge badge-${r.status}">${r.status}</span></td>
+            <td>
+              <select onchange="updateReservation('${r._id}',this.value)" style="font-size:0.75rem;padding:0.25rem;border:1px solid var(--border);border-radius:4px">
+                <option value="">Change…</option>
+                <option value="confirmed">Confirm</option>
+                <option value="completed">Complete</option>
+                <option value="cancelled">Cancel</option>
+              </select>
+            </td>
+          </tr>`).join('')}
+      </tbody></table>`;
+  } catch (e) { document.getElementById('reservationsTable').innerHTML = `<div class="empty"><p>Error: ${e.message}</p></div>`; }
+};
+
+document.getElementById('resFilterStatus').addEventListener('change', loadReservations);
+document.getElementById('resFilterDate').addEventListener('change', loadReservations);
+
+const updateReservation = async (id, status) => {
+  if (!status) return;
+  try { await api('/reservations/' + id, { method: 'PATCH', body: { status } }); loadReservations(); }
+  catch (e) { alert(e.message); }
+};
+
+// ── ORDERS ──────────────────────────────────────────
+const loadOrders = async () => {
+  const status = document.getElementById('orderFilterStatus').value;
+  try {
+    const data = await api('/orders?limit=50' + (status ? '&status=' + status : ''));
+    document.getElementById('ordersCount').textContent = `${data.total} total`;
+    if (!data.orders.length) {
+      document.getElementById('ordersTable').innerHTML = '<div class="empty"><div class="icon">🍳</div><p>No orders found</p></div>';
+      return;
+    }
+    document.getElementById('ordersTable').innerHTML = `
+      <table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Type</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+        ${data.orders.map(o => `
+          <tr>
+            <td style="font-family:monospace;font-size:0.72rem">#${o._id.toString().slice(-6).toUpperCase()}</td>
+            <td><strong>${o.customerName}</strong><br><span style="color:var(--muted);font-size:0.72rem">${o.customerPhone}</span></td>
+            <td>${o.items.map(i => `${i.name} ×${i.quantity}`).join(', ')}</td>
+            <td><strong>₹${o.total}</strong></td>
+            <td>${o.orderType}</td>
+            <td><span class="badge badge-${o.payment?.status || 'pending'}">${o.payment?.status || 'pending'}</span></td>
+            <td><span class="badge badge-${o.status}">${o.status}</span></td>
+            <td>
+              <select onchange="updateOrder('${o._id}',this.value)" style="font-size:0.75rem;padding:0.25rem;border:1px solid var(--border);border-radius:4px">
+                <option value="">Change…</option>
+                <option value="confirmed">Confirm</option>
+                <option value="preparing">Preparing</option>
+                <option value="ready">Ready</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancel</option>
+              </select>
+            </td>
+          </tr>`).join('')}
+      </tbody></table>`;
+  } catch (e) { document.getElementById('ordersTable').innerHTML = `<div class="empty"><p>Error: ${e.message}</p></div>`; }
+};
+
+document.getElementById('orderFilterStatus').addEventListener('change', loadOrders);
+
+const updateOrder = async (id, status) => {
+  if (!status) return;
+  try { await api('/orders/' + id, { method: 'PATCH', body: { status } }); loadOrders(); }
+  catch (e) { alert(e.message); }
+};
+
+// ── MENU ────────────────────────────────────────────
+const loadMenu = async () => {
+  const cat = document.getElementById('menuFilterCat').value;
+  try {
+    const data = await api('/menu' + (cat ? '?category=' + cat : ''));
+    if (!data.items.length) {
+      document.getElementById('menuGrid').innerHTML = '<div class="empty"><div class="icon">🍽️</div><p>No menu items</p></div>';
+      return;
+    }
+    document.getElementById('menuGrid').innerHTML = data.items.map(item => `
+      <div class="menu-admin-card">
+        <img src="${item.image || 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&q=60'}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&q=60'"/>
+        <div class="menu-admin-body">
+          <h4>${item.name}</h4>
+          <p>${item.description}</p>
+          <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem">
+            <span class="badge ${item.isVeg ? 'badge-confirmed' : 'badge-pending'}">${item.isVeg ? 'Veg' : 'Non-Veg'}</span>
+            <span class="badge badge-completed">${item.category}</span>
+            ${item.tags?.map(t => `<span class="badge" style="background:#f5f0ea;color:var(--muted)">${t}</span>`).join('') || ''}
+          </div>
+          <div class="menu-admin-footer">
+            <strong style="color:var(--caramel);font-size:0.95rem">₹${item.price}</strong>
+            <div style="display:flex;gap:0.5rem;align-items:center">
+              <label class="toggle" title="${item.isAvailable ? 'Available' : 'Unavailable'}">
+                <input type="checkbox" ${item.isAvailable ? 'checked' : ''} onchange="toggleAvailability('${item._id}',this.checked)"/>
+                <span class="toggle-slider"></span>
+              </label>
+              <button class="btn btn-ghost btn-sm" onclick='editMenuItem(${JSON.stringify(item)})'>✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteMenuItem('${item._id}')">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) { document.getElementById('menuGrid').innerHTML = `<div class="empty"><p>Error: ${e.message}</p></div>`; }
+};
+
+document.getElementById('menuFilterCat').addEventListener('change', loadMenu);
+
+const openMenuModal = () => {
+  document.getElementById('menuItemId').value = '';
+  document.getElementById('menuModalTitle').textContent = 'Add Menu Item';
+  ['menuName','menuPrice','menuDesc','menuImage','menuTags'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('menuCategory').value = 'breakfast';
+  document.getElementById('menuIsVeg').value = 'true';
+  document.getElementById('menuModal').classList.add('open');
+};
+const closeMenuModal = () => document.getElementById('menuModal').classList.remove('open');
+
+const editMenuItem = (item) => {
+  document.getElementById('menuItemId').value = item._id;
+  document.getElementById('menuModalTitle').textContent = 'Edit Menu Item';
+  document.getElementById('menuName').value = item.name;
+  document.getElementById('menuPrice').value = item.price;
+  document.getElementById('menuDesc').value = item.description;
+  document.getElementById('menuCategory').value = item.category;
+  document.getElementById('menuIsVeg').value = String(item.isVeg);
+  document.getElementById('menuImage').value = item.image || '';
+  document.getElementById('menuTags').value = (item.tags || []).join(', ');
+  document.getElementById('menuModal').classList.add('open');
+};
+
+const saveMenuItem = async () => {
+  const id = document.getElementById('menuItemId').value;
+  const body = {
+    name: document.getElementById('menuName').value.trim(),
+    price: Number(document.getElementById('menuPrice').value),
+    description: document.getElementById('menuDesc').value.trim(),
+    category: document.getElementById('menuCategory').value,
+    isVeg: document.getElementById('menuIsVeg').value === 'true',
+    image: document.getElementById('menuImage').value.trim(),
+    tags: document.getElementById('menuTags').value.split(',').map(t => t.trim()).filter(Boolean),
+  };
+  try {
+    if (id) await api('/menu/' + id, { method: 'PUT', body });
+    else await api('/menu', { method: 'POST', body });
+    closeMenuModal(); loadMenu();
+  } catch (e) { alert(e.message); }
+};
+
+const deleteMenuItem = async (id) => {
+  if (!confirm('Delete this item?')) return;
+  try { await api('/menu/' + id, { method: 'DELETE' }); loadMenu(); }
+  catch (e) { alert(e.message); }
+};
+
+const toggleAvailability = async (id, isAvailable) => {
+  try { await api('/menu/' + id, { method: 'PUT', body: { isAvailable } }); }
+  catch (e) { alert(e.message); loadMenu(); }
+};
+
+// ── PAYMENTS ────────────────────────────────────────
+const loadPayments = async () => {
+  try {
+    const data = await api('/payments');
+    if (!data.orders.length) {
+      document.getElementById('paymentsTable').innerHTML = '<div class="empty"><div class="icon">💳</div><p>No payments yet</p></div>';
+      return;
+    }
+    document.getElementById('paymentsTable').innerHTML = `
+      <div style="padding:0.75rem 1.25rem;background:#e8f5e9;border-bottom:1px solid var(--border)">
+        <strong style="color:#2e7d32">Total Revenue: ₹${data.totalRevenue.toLocaleString('en-IN')}</strong>
+      </div>
+      <table><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Method</th><th>Razorpay ID</th><th>Paid At</th></tr></thead><tbody>
+        ${data.orders.map(o => `
+          <tr>
+            <td style="font-family:monospace">#${o._id.toString().slice(-6).toUpperCase()}</td>
+            <td>${o.customerName}</td>
+            <td><strong>₹${o.total}</strong></td>
+            <td>${o.payment?.method || 'razorpay'}</td>
+            <td style="font-family:monospace;font-size:0.72rem">${o.payment?.razorpayPaymentId || '—'}</td>
+            <td>${o.payment?.paidAt ? new Date(o.payment.paidAt).toLocaleString('en-IN') : '—'}</td>
+          </tr>`).join('')}
+      </tbody></table>`;
+  } catch (e) { document.getElementById('paymentsTable').innerHTML = `<div class="empty"><p>Error: ${e.message}</p></div>`; }
+};
+
+// ── INIT ─────────────────────────────────────────────
+if (token) {
+  api('/auth/me').then(data => {
+    adminData = data.admin;
+    showApp();
+  }).catch(() => {
+    token = null; localStorage.removeItem('cafe_token');
+  });
+}
+</script>
+</body>
+</html>
