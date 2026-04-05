@@ -43,7 +43,7 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 // ── Serve Frontend ──
 const path = require('path');
-app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(express.static(path.join(__dirname, '../../frontend')));
 
 // ── API Routes ──
 app.use('/api/auth',         require('./routes/auth'));
@@ -61,9 +61,9 @@ app.get('/api/health', (req, res) => {
 // ── Serve frontend for all non-api routes ──
 app.get('*', (req, res) => {
   if (req.path.startsWith('/admin')) {
-    return res.sendFile(path.join(__dirname, '../frontend/admin/index.html'));
+    return res.sendFile(path.join(__dirname, '../../frontend/admin/index.html'));
   }
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  res.sendFile(path.join(__dirname, '../../frontend/index.html'));
 });
 
 // ── Global Error Handler ──
